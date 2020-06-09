@@ -1,22 +1,33 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { PugComponent } from './components/pug/pug.component';
-import { PugListComponent } from './components/pug-list/pug-list.component';
+import { MatchComponent } from './components/match/match.component';
+import { MatchListComponent } from './components/match-list/match-list.component';
+import { PlayerListComponent } from './components/player-list/player-list.component';
+import { PlayerComponent } from './components/player/player.component';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '',
-    pathMatch: 'full'
+    // redirectTo: 'home',
+    component: HomeComponent
   },
   {
-    path: 'pug/:id',
-    component: PugComponent,
+    path: 'matches',
+    component: MatchListComponent
   },
   {
-    path: 'pugs/',
-    component: PugListComponent,
+    path: 'matches/:id',
+    component: MatchComponent
   },
+  {
+    path: 'players',
+    component: PlayerListComponent
+  },
+  {
+    path: 'players/:id',
+    component: PlayerComponent
+  }
 ];
 
 @NgModule({

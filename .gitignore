@@ -1,2 +1,4 @@
-bin
-obj
+**/bin
+**/obj
+**/node_modules
+**/.idea
