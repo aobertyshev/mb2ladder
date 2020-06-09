@@ -1,0 +1,7 @@
+{
+  "name": "mb2ladder",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
