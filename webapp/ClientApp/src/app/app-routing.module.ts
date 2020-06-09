@@ -1,16 +1,22 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { PugComponent } from './components/pug/pug.component';
+import { PugListComponent } from './components/pug-list/pug-list.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'folder/Inbox',
+    redirectTo: '',
     pathMatch: 'full'
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
-  }
+    path: 'pug/:id',
+    component: PugComponent,
+  },
+  {
+    path: 'pugs/',
+    component: PugListComponent,
+  },
 ];
 
 @NgModule({
@@ -19,4 +25,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
