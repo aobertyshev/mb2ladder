@@ -11,12 +11,12 @@ export class RegisterComponent implements OnInit {
 
   @Input() registerModalController: ModalController;
 
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly _authService: AuthService) { }
 
   ngOnInit() { }
 
   async register() {
-    await this.authService.register({
+    await this._authService.register({
       email: 'test@',
       nick: 'test',
       password: 'test'
