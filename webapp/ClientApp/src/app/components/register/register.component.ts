@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
   async register() {
     await this._authService.register({
       email: 'test@',
-      nick: 'test',
+      nick: 'Helix',
       password: 'test'
     });
     this.registerModalController.dismiss();

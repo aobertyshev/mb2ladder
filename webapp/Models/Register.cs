@@ -1,4 +1,4 @@
-namespace MBIILadder.WebApp
+namespace MBIILadder.WebApp.Models
 {
     public class Register
     {

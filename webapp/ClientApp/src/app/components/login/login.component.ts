@@ -17,10 +17,13 @@ export class LoginComponent implements OnInit {
   ngOnInit() { }
 
   async signIn() {
-    await this._authService.signIn({
-      nick: 'test',
+    const response = await this._authService.signIn({
+      nick: 'Helix',
       password: 'test'
     });
+    if (response.status === 200) {
+      this.loginModalController.dismiss();
+    }
   }
 
   async register() {
