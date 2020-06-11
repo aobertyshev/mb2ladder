@@ -1,4 +1,5 @@
-echo 'export MBIILadder_DBConnectionString="Host=localhost;Database=postgres;Username=postgres;Password=my_password"' >> ~/.bashrc
-echo 'export MBIILadder_WebAppTokenSecretKey="Super mega secret key that nobody can break!!!"' >> ~/.bashrc
-echo 'export MBIILadder_DiscordAPIKey="somethingsomething"' >> ~/.bashrc
+echo 'export MBIILadder_DBConnectionString="<YOUR_CONNECTION_STRING_HERE>"' >> ~/.bashrc
+echo 'export MBIILadder_WebAppTokenSecretKey="<YOUR_SECRET_KEY_HERE>"' >> ~/.bashrc
+echo 'export MBIILadder_DiscordAPIKey="<YOUR_DISCORD_API_KEY_HERE>"' >> ~/.bashrc
 source ~/.bashrc
+echo 'You need to restart shell where you start the processes in order to use these new variables'

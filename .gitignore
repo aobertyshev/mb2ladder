@@ -2,3 +2,4 @@
 **/obj
 **/node_modules
 **/.idea
+config-real.sh
