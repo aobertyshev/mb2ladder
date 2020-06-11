@@ -8,9 +8,9 @@ Web application: .NET Core 3.1 + Ionic Framework 5 + Angular 9
 
 Infrastructure: Kubernetes + Terraform
 
-Discord bot
+Discord bot: .NET Core 3.1
 
-RTV-like service to accept requests and manage the server
+Server manager: .NET Core 3.1
 
 
 ## Set up environment
