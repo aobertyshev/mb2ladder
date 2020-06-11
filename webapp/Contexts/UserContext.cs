@@ -13,6 +13,6 @@ namespace MBIILadder.WebApp.Contexts
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-             => optionsBuilder.UseNpgsql(System.Environment.GetEnvironmentVariable("MBIILadder_DBConnectionString"));
+             => optionsBuilder.UseNpgsql(System.Environment.GetEnvironmentVariable("MBII_LADDER_DB_CONNECTION_STRING"));
     }
 }

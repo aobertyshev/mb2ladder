@@ -6,7 +6,7 @@ namespace MBILadder.DiscordBot
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Environment.GetEnvironmentVariable("MBIILadder_DiscordAPIKey"));
+            Console.WriteLine(Environment.GetEnvironmentVariable("MBII_LADDER_DISCORD_BOT_API_KEY"));
         }
     }
 }

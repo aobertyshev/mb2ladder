@@ -19,7 +19,7 @@ namespace MBIILadder.WebApp.Services
 
     public class Token : IToken
     {
-        private readonly string envSecretKey = Environment.GetEnvironmentVariable("MBIILadder_WebAppTokenSecretKey");
+        private readonly string envSecretKey = Environment.GetEnvironmentVariable("MBII_LADDER_WEB_APP_TOKEN_SECRET_KEY");
         public Token()
         {
         }
