@@ -26,17 +26,11 @@ namespace MBIILadder.WebApp.Services
 
         public string GenerateToken(double expirationTime, List<Claim> claims)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(envSecretKey));
-            var signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-            var tokenOptions = new JwtSecurityToken(
+            return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
                 expires: DateTime.Now.AddMinutes(expirationTime),
-                signingCredentials: signInCredentials,
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(envSecretKey)), SecurityAlgorithms.HmacSha256),
                 claims: claims
-            );
-
-            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return token;
+            ));
         }
 
         public List<Claim> GetAllClaimsFromToken(string token)
