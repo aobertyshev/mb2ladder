@@ -1,12 +1,34 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 
 namespace MBILadder.DiscordBot
 {
     class Program
     {
+        private DiscordSocketClient _client;
         static void Main(string[] args)
+            => new Program().MainAsync().GetAwaiter().GetResult();
+
+        async Task MainAsync()
         {
-            Console.WriteLine(Environment.GetEnvironmentVariable("MBII_LADDER_DISCORD_BOT_API_KEY"));
+            _client = new DiscordSocketClient();
+
+            _client.Log += Log;
+            var token = Environment.GetEnvironmentVariable("MBII_LADDER_DISCORD_BOT_API_KEY");
+            await _client.LoginAsync(TokenType.Bot, token);
+            await _client.StartAsync();
+
+            // Block this task until the program is closed.
+            await Task.Delay(-1);
+        }
+
+        private Task Log(LogMessage msg)
+        {
+            Console.WriteLine(msg.ToString());
+            return Task.CompletedTask;
         }
     }
 }
