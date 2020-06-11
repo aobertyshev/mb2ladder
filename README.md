@@ -21,5 +21,5 @@ Server manager: .NET Core 3.1
 4. Pull this repo
 5. Change the values in `config.sh` to your own
 6. `chmod +x config.sh && ./config.sh`
-7. Do `dotnet restore` and in webapp/ClientApp do `npm install`
+7. `dotnet restore && cd ./webapp/ClientApp/ && npm install`
 8. Start any of the services with `dotnet run` in a respective folder
