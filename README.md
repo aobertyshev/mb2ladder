@@ -17,7 +17,9 @@ Server manager: .NET Core 3.1
 
 1. Install .NET Core SDK 3.1
 2. Install NodeJs LTS
-3. Install PostgreSQL and change the password of a "postgres" user to "my_password"
+3. Install PostgreSQL
 4. Pull this repo
-5. Do `dotnet restore` and in webapp/ClientApp do `npm install`
-6. Start any of the services with `dotnet run` in a respective folder
+5. Change the values in `config.sh` to your own
+6. `chmod +x config.sh && ./config.sh`
+7. Do `dotnet restore` and in webapp/ClientApp do `npm install`
+8. Start any of the services with `dotnet run` in a respective folder
