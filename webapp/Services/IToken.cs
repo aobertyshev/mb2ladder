@@ -19,16 +19,14 @@ namespace MBIILadder.WebApp.Services
 
     public class Token : IToken
     {
-        private readonly IConfiguration _configuration;
-
-        public Token(IConfiguration configuration)
+        private readonly string envSecretKey = Environment.GetEnvironmentVariable("MBIILadder_WebAppTokenSecretKey");
+        public Token()
         {
-            _configuration = configuration;
         }
 
         public string GenerateToken(double expirationTime, List<Claim> claims)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(/*_configuration["AppSettings:Secret"]*/"Super mega secret key that nobody can break!!!"));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(envSecretKey));
             var signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var tokenOptions = new JwtSecurityToken(
@@ -67,7 +65,7 @@ namespace MBIILadder.WebApp.Services
 
             validationParameters.IssuerSigningKey =
                 new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(/*_configuration["AppSettings:Secret"]*/"Super mega secret key that nobody can break!!!"));
+                    Encoding.UTF8.GetBytes(envSecretKey));
 
             ClaimsPrincipal principal =
                 new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out validatedToken);

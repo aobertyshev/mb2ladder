@@ -13,6 +13,6 @@ namespace MBIILadder.WebApp.Contexts
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-             => optionsBuilder.UseNpgsql("Host=localhost;Database=postgres;Username=postgres;Password=my_password");
+             => optionsBuilder.UseNpgsql(System.Environment.GetEnvironmentVariable("MBIILadder_DBConnectionString"));
     }
 }
