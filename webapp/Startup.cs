@@ -83,12 +83,6 @@ namespace MBIILadder.WebApp
             app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy(new CookiePolicyOptions
-            {
-                MinimumSameSitePolicy = SameSiteMode.Strict,
-                HttpOnly = HttpOnlyPolicy.Always,
-                Secure = CookieSecurePolicy.Always
-            });
             app.UseRouting();
             app.UseCors();
             app.Use(async (context, next) =>

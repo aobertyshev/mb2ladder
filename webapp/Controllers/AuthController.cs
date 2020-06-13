@@ -45,7 +45,8 @@ namespace MBIILadder.WebApp.Controllers
                 PlayerId = playerId,
                 Email = model.Email,
                 Password = await HashPasswordAsync(model.Password),
-                ConfirmedEmail = false
+                ConfirmedEmail = false,
+                RegisterDate = DateTime.UtcNow
             };
             var player = new Player
             {
@@ -99,12 +100,22 @@ namespace MBIILadder.WebApp.Controllers
                 return Unauthorized();
             }
 
+            var defaultExpirationInMinutes = 60;
             var player = await _firebase.GetPlayerAsync(user.PlayerId);
-            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", _tokenManager.GenerateToken(60, new List<System.Security.Claims.Claim>()),
-             new CookieOptions
-             {
-                 MaxAge = TimeSpan.FromMinutes(60)
-             });
+            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<System.Security.Claims.Claim>()), new CookieOptions
+            {
+                MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
+                SameSite = SameSiteMode.Strict,
+                Secure = true,
+                HttpOnly = true
+            });
+            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Expires", DateTime.UtcNow.AddMinutes(defaultExpirationInMinutes).ToString(), new CookieOptions
+            {
+                MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
+                SameSite = SameSiteMode.None,
+                Secure = false,
+                HttpOnly = false
+            });
             return Ok(player);
         }
     }

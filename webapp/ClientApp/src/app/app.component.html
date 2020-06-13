@@ -4,9 +4,13 @@
       <ion-content>
         <!-- <ion-list-header>Helix</ion-list-header>
                 <ion-note>Adequate People</ion-note> -->
-        <ion-button expand="block" type="submit" (click)="presentModal()">
+        <ion-button *ngIf="!auth.isAuthenticated()" expand="block" type="submit" (click)="presentModal()">
           <ion-icon slot="start" name="log-in"></ion-icon>
           Sign In
+        </ion-button>
+        <ion-button *ngIf="auth.isAuthenticated()" expand="block" type="submit" (click)="auth.signOut()">
+          <ion-icon slot="start" name="log-out"></ion-icon>
+          Sign Out
         </ion-button>
         <!-- <ion-item-divider></ion-item-divider> -->
         <hr />

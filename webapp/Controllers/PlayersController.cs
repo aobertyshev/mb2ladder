@@ -15,10 +15,9 @@ namespace MBIILadder.WebApp.Controllers
             _firebase = firebase;
         }
 
-        public async Task<IActionResult> GetPlayerList()
+        public async Task<IActionResult> List()
         {
-            // _firebase
-            return Ok();
+            return Ok((await _firebase.GetPlayersAsync()).Values);
         }
     }
 }

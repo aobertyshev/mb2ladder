@@ -1,6 +1,7 @@
 export interface Player {
-    nick: string;
-    id: number;
+    id: string;
+    userId: string;
+    nick;
     region: string;
     clanName: string;
 };

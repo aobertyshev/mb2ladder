@@ -10,6 +10,6 @@ export class PlayerService {
   constructor(private readonly http: HttpClient) { }
 
   async getPlayerList(): Promise<HttpResponse<Array<Player>>> {
-    return await this.http.get<Array<Player>>(`${window.location.origin}/players/getPlayerList`, { observe: 'response' }).toPromise();
+    return await this.http.get<Array<Player>>(`${window.location.origin}/players/list`, { observe: 'response' }).toPromise();
   }
 }

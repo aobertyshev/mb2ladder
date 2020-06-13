@@ -17,6 +17,7 @@ namespace MBIILadder.Shared.Services
         Task<Player> CreatePlayerAsync(Player player);
         Task<IDictionary<string, User>> GetUsersAsync();
         Task<Player> GetPlayerAsync(Guid id);
+        Task<IDictionary<string, Player>> GetPlayersAsync();
     }
 
     public class Firebase : IFirebase
@@ -42,6 +43,10 @@ namespace MBIILadder.Shared.Services
         public async Task<Player> CreatePlayerAsync(Player player)
         {
             return (await client.SetTaskAsync($"Players/{player.Id}", player)).ResultAs<Player>();
+        }
+        public async Task<IDictionary<string, Player>> GetPlayersAsync()
+        {
+            return (await client.GetTaskAsync("Players/")).ResultAs<Dictionary<string, Player>>();
         }
         public async Task<Player> GetPlayerAsync(Guid id)
         {
