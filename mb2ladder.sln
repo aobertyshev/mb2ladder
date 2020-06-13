@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "servermanager", "servermana
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapp", "webapp\webapp.csproj", "{012C3A6B-4734-4F85-9F60-23633A429223}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared", "shared\shared.csproj", "{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{012C3A6B-4734-4F85-9F60-23633A429223}.Release|x64.Build.0 = Release|Any CPU
 		{012C3A6B-4734-4F85-9F60-23633A429223}.Release|x86.ActiveCfg = Release|Any CPU
 		{012C3A6B-4734-4F85-9F60-23633A429223}.Release|x86.Build.0 = Release|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Debug|x64.Build.0 = Debug|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Debug|x86.Build.0 = Debug|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Release|x64.ActiveCfg = Release|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Release|x64.Build.0 = Release|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Release|x86.ActiveCfg = Release|Any CPU
+		{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
