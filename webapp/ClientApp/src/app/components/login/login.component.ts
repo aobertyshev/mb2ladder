@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
 
   async signIn() {
     const response = await this._authService.signIn({
-      nick: 'Helix',
+      email: 'test@',
       password: 'test'
     });
     if (response.status === 200) {

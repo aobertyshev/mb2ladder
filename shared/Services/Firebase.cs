@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using MBIILadder.Shared.Models;
+using System.Collections.Generic;
 
 namespace MBIILadder.Shared.Services
 {
@@ -12,6 +13,10 @@ namespace MBIILadder.Shared.Services
         Task<Match> UpdateMatchAsync(Match match);
         Task<Match> GetMatchAsync(Guid id);
         Task DeleteMatchAsync(Guid id);
+        Task<User> CreateUserAsync(User user);
+        Task<Player> CreatePlayerAsync(Player player);
+        Task<IDictionary<string, User>> GetUsersAsync();
+        Task<Player> GetPlayerAsync(Guid id);
     }
 
     public class Firebase : IFirebase
@@ -24,6 +29,23 @@ namespace MBIILadder.Shared.Services
                 AuthSecret = Environment.GetEnvironmentVariable("MBII_LADDER_FIREBASE_AUTH_SECRET"),
                 BasePath = Environment.GetEnvironmentVariable("MBII_LADDER_FIREBASE_BASE_PATH")
             });
+        }
+
+        public async Task<User> CreateUserAsync(User user)
+        {
+            return (await client.SetTaskAsync($"Users/{user.Id}", user)).ResultAs<User>();
+        }
+        public async Task<IDictionary<string, User>> GetUsersAsync()
+        {
+            return (await client.GetTaskAsync("Users/")).ResultAs<Dictionary<string, User>>();
+        }
+        public async Task<Player> CreatePlayerAsync(Player player)
+        {
+            return (await client.SetTaskAsync($"Players/{player.Id}", player)).ResultAs<Player>();
+        }
+        public async Task<Player> GetPlayerAsync(Guid id)
+        {
+            return (await client.GetTaskAsync($"Players/{id}")).ResultAs<Player>();
         }
 
         public async Task<Match> CreateMatchAsync(Match match)

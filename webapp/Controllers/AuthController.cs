@@ -6,18 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using MBIILadder.WebApp.Services;
 using Microsoft.AspNetCore.Authorization;
+using MBIILadder.Shared.Models;
 using MBIILadder.WebApp.Models;
-// using MBIILadder.WebApp.Contexts;
 using System.Security.Cryptography;
+using MBIILadder.Shared.Services;
 
 namespace MBIILadder.WebApp.Controllers
 {
     public class AuthController : ControllerBase
     {
         IToken _tokenManager;
-        public AuthController(IToken tokenManager)
+        IFirebase _firebase;
+        public AuthController(IToken tokenManager, IFirebase firebase)
         {
             _tokenManager = tokenManager;
+            _firebase = firebase;
         }
 
         [HttpPost]
@@ -27,45 +30,60 @@ namespace MBIILadder.WebApp.Controllers
             {
                 return BadRequest();
             }
-            // var savedPasswordHash = await HashPasswordAsync(model.Password);
+
+            if ((await _firebase.GetUsersAsync()).Values.SingleOrDefault(user => user.Email == model.Email) != null)
+            {
+                return Conflict();
+            }
+
+            var userId = Guid.NewGuid();
+            var playerId = Guid.NewGuid();
+
             var user = new User
             {
-                Nick = model.Nick,
+                Id = userId,
+                PlayerId = playerId,
                 Email = model.Email,
-                Password = model.Password
+                Password = await HashPasswordAsync(model.Password),
+                ConfirmedEmail = false
             };
-            // using (UserContext db = new UserContext())
-            // {
-            //     db.Users.Add(user);
-            //     db.SaveChanges();
-            // }
-            return Ok();
+            var player = new Player
+            {
+                Id = playerId,
+                UserId = userId,
+                Nick = model.Nick,
+                ClanName = string.Empty,
+                Region = string.Empty
+            };
+            await _firebase.CreateUserAsync(user);
+            await _firebase.CreatePlayerAsync(player);
+            return Ok(player);
         }
 
-        // private async Task<string> HashPasswordAsync(string password)
-        // {
-        //     byte[] salt;
-        //     new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-        //     var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
-        //     byte[] hash = pbkdf2.GetBytes(20);
-        //     byte[] hashBytes = new byte[36];
-        //     Array.Copy(salt, 0, hashBytes, 0, 16);
-        //     Array.Copy(hash, 0, hashBytes, 16, 20);
-        //     return Convert.ToBase64String(hashBytes);
-        // }
+        private async Task<string> HashPasswordAsync(string password)
+        {
+            byte[] salt;
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
+            byte[] hash = pbkdf2.GetBytes(20);
+            byte[] hashBytes = new byte[36];
+            Array.Copy(salt, 0, hashBytes, 0, 16);
+            Array.Copy(hash, 0, hashBytes, 16, 20);
+            return Convert.ToBase64String(hashBytes);
+        }
 
-        // private async Task<bool> ArePasswordsEqual(string storedPassword, string modelPassword)
-        // {
-        //     byte[] hashBytes = Convert.FromBase64String(storedPassword);
-        //     byte[] salt = new byte[16];
-        //     Array.Copy(hashBytes, 0, salt, 0, 16);
-        //     var pbkdf2 = new Rfc2898DeriveBytes(modelPassword, salt, 100000);
-        //     byte[] hash = pbkdf2.GetBytes(20);
-        //     for (int i = 0; i < 20; i++)
-        //         if (hashBytes[i + 16] != hash[i])
-        //             return false;
-        //     return true;
-        // }
+        private bool ArePasswordsEqual(string storedPassword, string modelPassword)
+        {
+            byte[] hashBytes = Convert.FromBase64String(storedPassword);
+            byte[] salt = new byte[16];
+            Array.Copy(hashBytes, 0, salt, 0, 16);
+            var pbkdf2 = new Rfc2898DeriveBytes(modelPassword, salt, 100000);
+            byte[] hash = pbkdf2.GetBytes(20);
+            for (int i = 0; i < 20; i++)
+                if (hashBytes[i + 16] != hash[i])
+                    return false;
+            return true;
+        }
 
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] Login model)
@@ -75,22 +93,19 @@ namespace MBIILadder.WebApp.Controllers
                 return BadRequest();
             }
 
-            // using (UserContext db = new UserContext())
-            // {
-            //     var user = db.Users.FirstOrDefault(user => user.Nick == model.Nick);
-            //     if (user == null || !(await ArePasswordsEqual(user.Password, model.Password)))
-            //     {
-            //         return Unauthorized();
-            //     }
+            var user = (await _firebase.GetUsersAsync()).Values.SingleOrDefault(user => user.Email == model.Email);
+            if (user == null || !ArePasswordsEqual(user.Password, model.Password))
+            {
+                return Unauthorized();
+            }
 
-            //     HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", _tokenManager.GenerateToken(60, new List<System.Security.Claims.Claim>()),
-            //     new CookieOptions
-            //     {
-            //         MaxAge = TimeSpan.FromMinutes(60)
-            //     });
-            //     return Ok();
-            // }
-            return Ok();
+            var player = await _firebase.GetPlayerAsync(user.PlayerId);
+            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", _tokenManager.GenerateToken(60, new List<System.Security.Claims.Claim>()),
+             new CookieOptions
+             {
+                 MaxAge = TimeSpan.FromMinutes(60)
+             });
+            return Ok(player);
         }
     }
 }

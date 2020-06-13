@@ -21,7 +21,6 @@ namespace MBIILadder.WebApp.Controllers
         }
         public async Task<IActionResult> Create()
         {
-            await _firebase.InsertDataAsync();
             return Ok();
         }
     }

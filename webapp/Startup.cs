@@ -66,7 +66,7 @@ namespace MBIILadder.WebApp
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });
-            services.AddTransient<IFirebase, Firebase>();
+            services.AddSingleton<IFirebase, Firebase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
