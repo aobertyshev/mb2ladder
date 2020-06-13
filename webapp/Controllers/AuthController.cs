@@ -101,22 +101,26 @@ namespace MBIILadder.WebApp.Controllers
             }
 
             var defaultExpirationInMinutes = 60;
+            var defaultCookieOptions = new CookieOptions
+            {
+                MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
+                SameSite = SameSiteMode.None,
+                Secure = false,
+                HttpOnly = false
+            };
             var player = await _firebase.GetPlayerAsync(user.PlayerId);
-            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Id", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<System.Security.Claims.Claim>()), new CookieOptions
+            HttpContext.Response.Cookies.Append("MBIILadder.SessionKey", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<System.Security.Claims.Claim>()), new CookieOptions
             {
                 MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
                 SameSite = SameSiteMode.Strict,
                 Secure = true,
                 HttpOnly = true
             });
-            HttpContext.Response.Cookies.Append(".AspNetCore.Application.Expires", DateTime.UtcNow.AddMinutes(defaultExpirationInMinutes).ToString(), new CookieOptions
-            {
-                MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
-                SameSite = SameSiteMode.None,
-                Secure = false,
-                HttpOnly = false
-            });
-            return Ok(player);
+            HttpContext.Response.Cookies.Append("MBIILadder.ExpiryDate", DateTime.UtcNow.AddMinutes(defaultExpirationInMinutes).ToString(), defaultCookieOptions);
+            HttpContext.Response.Cookies.Append("MBIILadder.Player.Nick", player.Nick, defaultCookieOptions);
+            HttpContext.Response.Cookies.Append("MBIILadder.Player.Clan", player.ClanName, defaultCookieOptions);
+            HttpContext.Response.Cookies.Append("MBIILadder.Player.Region", player.Region, defaultCookieOptions);
+            return Ok();
         }
     }
 }

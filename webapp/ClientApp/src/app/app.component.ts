@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth/auth.service';
+import { ToolsService } from './services/tools/tools.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,8 @@ export class AppComponent implements OnInit {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private readonly modalController: ModalController,
-    private readonly auth: AuthService
+    private readonly auth: AuthService,
+    private readonly tools: ToolsService
   ) {
     this.initializeApp();
   }

@@ -2,18 +2,14 @@
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
-        <!-- <ion-list-header>Helix</ion-list-header>
-                <ion-note>Adequate People</ion-note> -->
-        <ion-button *ngIf="!auth.isAuthenticated()" expand="block" type="submit" (click)="presentModal()">
+        <ion-button *ngIf="!auth.isAuthenticated()" expand="block" (click)="presentModal()">
           <ion-icon slot="start" name="log-in"></ion-icon>
           Sign In
         </ion-button>
-        <ion-button *ngIf="auth.isAuthenticated()" expand="block" type="submit" (click)="auth.signOut()">
-          <ion-icon slot="start" name="log-out"></ion-icon>
-          Sign Out
-        </ion-button>
-        <!-- <ion-item-divider></ion-item-divider> -->
-        <hr />
+        <ng-container *ngIf="auth.isAuthenticated()">
+          <ion-list-header>{{ tools.getCookie('MBIILadder.Player.Nick') }}</ion-list-header>
+          <ion-note>{{ tools.getCookie('MBIILadder.Player.Clan') }}</ion-note>
+        </ng-container>
         <ion-list>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
@@ -33,6 +29,11 @@
             <ion-label>{{ label }}</ion-label>
           </ion-item>
         </ion-list> -->
+
+        <ion-button *ngIf="auth.isAuthenticated()" expand="block" (click)="auth.signOut()">
+          <ion-icon slot="start" name="log-out"></ion-icon>
+          Sign Out
+        </ion-button>
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>

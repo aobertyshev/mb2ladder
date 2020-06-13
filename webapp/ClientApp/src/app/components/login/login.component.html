@@ -1,18 +1,16 @@
-<ion-list lines="full" class="ion-no-margin ion-no-padding">
+<form [formGroup]="loginForm" (ngSubmit)="signIn()">
   <ion-item>
-    <ion-label position="floating">Nick</ion-label>
-    <ion-input></ion-input>
+    <ion-label position="floating">Email</ion-label>
+    <ion-input type="email" formControlName="email"></ion-input>
   </ion-item>
-
   <ion-item>
     <ion-label position="floating">Password</ion-label>
-    <ion-input type="password"></ion-input>
+    <ion-input type="password" formControlName="password"></ion-input>
   </ion-item>
-</ion-list>
-
-
-<div class="ion-padding">
-  <ion-button expand="block" type="submit" class="ion-no-margin" (click)="signIn()">Sign In</ion-button>
-  <ion-button expand="block" fill="clear" class="ion-no-margin">Forgot password?</ion-button>
-  <ion-button expand="block" fill="clear" class="ion-no-margin" (click)="register()">Register</ion-button>
-</div>
+  <div class="ion-padding">
+    <ion-button expand="block" type="submit" class="ion-no-margin">Sign In</ion-button>
+    <ion-button expand="block" type="button" fill="clear" class="ion-no-margin">Forgot password?</ion-button>
+    <ion-button expand="block" type="button" fill="clear" class="ion-no-margin" (click)="register()">Register
+    </ion-button>
+  </div>
+</form>

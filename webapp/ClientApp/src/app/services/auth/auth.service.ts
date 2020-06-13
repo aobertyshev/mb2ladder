@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    const cookie = this.tools.getCookie('.AspNetCore.Application.Expires');
+    const cookie = this.tools.getCookie('MBIILadder.ExpiryDate');
     if (!!cookie) {
       const now = this.tools.convertDateToUTC(new Date());
       const expiry = new Date(decodeURIComponent(cookie));
@@ -30,6 +30,6 @@ export class AuthService {
   }
 
   signOut(): void {
-    this.tools.deleteCookie('.AspNetCore.Application.Expires');
+    this.tools.deleteCookie('MBIILadder.ExpiryDate');
   }
 }
