@@ -5,25 +5,32 @@
   </ion-item>
   <ion-item>
     <ion-label position="floating">Type</ion-label>
-    <ion-input type="text" formControlName="region" disabled formControlName="type"></ion-input>
+    <ion-input type="text" formControlName="region" formControlName="type"></ion-input>
   </ion-item>
   <ion-grid>
     <ion-row>
       <ion-col>
         <p>Players: {{ playersInMatch.length }} / 10</p>
         <ion-chip *ngFor="let player of playersInMatch">
+          <ion-avatar>
+            <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+          </ion-avatar>
           <ion-label>{{ player.nick }}</ion-label>
           <ion-icon name="close" (click)="deletePlayerFromMatch(player)"></ion-icon>
         </ion-chip>
       </ion-col>
       <ion-col>
         <ion-searchbar animated placeholder="Players" formControlName="playerSearch"></ion-searchbar>
-        <ion-list *ngIf="!!players" style="max-height: 150px; overflow-y: auto;">
+        <ng-container *ngIf="!!players">
           <ng-container *ngFor="let player of players">
-            <ion-item *ngIf="shouldShowItem(player.nick)" [disabled]="playerAlreadyInMatch(player)"
-              (click)="addPlayer(player)">{{ player.nick }}</ion-item>
+            <ion-chip *ngIf="shouldShowItem(player.nick) && !playerAlreadyInMatch(player)" (click)="addPlayer(player)">
+              <ion-avatar>
+                <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+              </ion-avatar>
+              <ion-label>{{ player.nick }}</ion-label>
+            </ion-chip>
           </ng-container>
-        </ion-list>
+        </ng-container>
       </ion-col>
     </ion-row>
   </ion-grid>

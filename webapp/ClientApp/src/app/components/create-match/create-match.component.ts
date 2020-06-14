@@ -23,7 +23,7 @@ export class CreateMatchComponent implements OnInit {
     this.createMatchForm = this.formBuilder.group({
       dateTime: [undefined, Validators.compose([
         Validators.required, Validators.email])],
-      type: ['PUG', Validators.required],
+      type: [{ value: 'PUG', disabled: true }, Validators.required],
       playerSearch: ['']
     });
     this.players = await (await this.playerService.getPlayerList()).body;

@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
       passwordRepeat: [undefined, Validators.required],
       nick: [undefined, Validators.required],
       clanName: [undefined],
-      region: ['EU'],
+      region: [{ value: 'EU', disabled: true }],
       discord: [undefined, Validators.required]
     });
   }
