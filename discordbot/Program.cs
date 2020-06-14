@@ -3,18 +3,21 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using MBIILadder.Shared.Services;
 
 namespace MBILadder.DiscordBot
 {
     class Program
     {
         private DiscordSocketClient _client;
+        private IFirebase _firebase;
         static void Main(string[] args)
             => new Program().MainAsync().GetAwaiter().GetResult();
 
         async Task MainAsync()
         {
             _client = new DiscordSocketClient();
+            _firebase = new Firebase();
 
             _client.Log += Log;
             var token = Environment.GetEnvironmentVariable("MBII_LADDER_DISCORD_BOT_API_KEY");
