@@ -1,15 +1,28 @@
 <form [formGroup]="registerForm" (ngSubmit)="register()">
   <ion-item>
-    <ion-label position="floating">Nick</ion-label>
-    <ion-input type="text" formControlName="nick"></ion-input>
-  </ion-item>
-  <ion-item>
     <ion-label position="floating">Email</ion-label>
     <ion-input type="email" formControlName="email"></ion-input>
   </ion-item>
   <ion-item>
     <ion-label position="floating">Password</ion-label>
     <ion-input type="password" formControlName="password"></ion-input>
+  </ion-item>
+  <hr />
+  <ion-item>
+    <ion-label position="floating">Nick</ion-label>
+    <ion-input type="text" formControlName="nick"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Clan</ion-label>
+    <ion-input type="text" formControlName="clanName"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Region</ion-label>
+    <ion-input type="text" formControlName="region"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Discord</ion-label>
+    <ion-input type="text" formControlName="discord"></ion-input>
   </ion-item>
   <div class="ion-padding">
     <ion-button expand="block" type="submit" class="ion-no-margin">Register</ion-button>

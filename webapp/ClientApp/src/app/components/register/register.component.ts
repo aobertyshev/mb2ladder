@@ -23,7 +23,10 @@ export class RegisterComponent implements OnInit {
       email: [undefined, Validators.compose([
         Validators.required, Validators.email])],
       password: [undefined, Validators.required],
-      nick: [undefined, Validators.required]
+      nick: [undefined, Validators.required],
+      clanName: [undefined],
+      region: ['EU'],
+      discord: [undefined, Validators.required]
     });
   }
 

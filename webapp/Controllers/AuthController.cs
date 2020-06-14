@@ -53,8 +53,9 @@ namespace MBIILadder.WebApp.Controllers
                 Id = playerId,
                 UserId = userId,
                 Nick = model.Nick,
-                ClanName = string.Empty,
-                Region = string.Empty
+                ClanName = model.ClanName,
+                Region = model.Region,
+                Discord = model.Discord,
             };
             await _firebase.CreateUserAsync(user);
             await _firebase.CreatePlayerAsync(player);

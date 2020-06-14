@@ -9,5 +9,6 @@ namespace MBIILadder.Shared.Models
         public string Nick { get; set; }
         public string Region { get; set; }
         public string ClanName { get; set; }
+        public string Discord { get; set; }
     }
 }
