@@ -23,6 +23,7 @@ export class RegisterComponent implements OnInit {
       email: [undefined, Validators.compose([
         Validators.required, Validators.email])],
       password: [undefined, Validators.required],
+      passwordRepeat: [undefined, Validators.required],
       nick: [undefined, Validators.required],
       clanName: [undefined],
       region: ['EU'],
@@ -33,7 +34,16 @@ export class RegisterComponent implements OnInit {
 
   async register() {
     if (this.registerForm.valid) {
+      if (this.registerForm.value.password !== this.registerForm.value.passwordRepeat) {
+        const toast = await this.toastController.create({
+          message: 'Passwords aren\'t equal',
+          duration: 2000
+        });
+        toast.present();
+        return;
+      }
       this.details = this.registerForm.value;
+      delete this.details['passwordRepeat'];
       try {
         await this._authService.register(this.details);
         this.registerModalController.dismiss();
