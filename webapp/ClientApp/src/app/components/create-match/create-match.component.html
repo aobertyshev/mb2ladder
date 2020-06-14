@@ -1,0 +1,33 @@
+<form [formGroup]="createMatchForm" (ngSubmit)="createMatch()">
+  <ion-item>
+    <ion-label position="floating">Date and time (UTC)</ion-label>
+    <ion-datetime displayFormat="DD.MM.YYYY HH:mm:ss" formControlName="dateTime"></ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Type</ion-label>
+    <ion-input type="text" formControlName="region" disabled formControlName="type"></ion-input>
+  </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <p>Players: {{ playersInMatch.length }} / 10</p>
+        <ion-chip *ngFor="let player of playersInMatch">
+          <ion-label>{{ player.nick }}</ion-label>
+          <ion-icon name="close" (click)="deletePlayerFromMatch(player)"></ion-icon>
+        </ion-chip>
+      </ion-col>
+      <ion-col>
+        <ion-searchbar animated placeholder="Players" formControlName="playerSearch"></ion-searchbar>
+        <ion-list *ngIf="!!players" style="max-height: 150px; overflow-y: auto;">
+          <ng-container *ngFor="let player of players">
+            <ion-item *ngIf="shouldShowItem(player.nick)" [disabled]="playerAlreadyInMatch(player)"
+              (click)="addPlayer(player)">{{ player.nick }}</ion-item>
+          </ng-container>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="ion-padding">
+    <ion-button expand="block" type="submit" class="ion-no-margin">Create match</ion-button>
+  </div>
+</form>

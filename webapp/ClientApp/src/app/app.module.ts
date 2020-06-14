@@ -14,9 +14,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { PlayerListComponent } from './components/player-list/player-list.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { CreateMatchComponent } from './components/create-match/create-match.component';
 
 @NgModule({
-  declarations: [AppComponent, PlayerListComponent, LoginComponent, RegisterComponent],
+  declarations: [
+    AppComponent,
+    PlayerListComponent,
+    LoginComponent,
+    RegisterComponent,
+    CreateMatchComponent
+  ],
   entryComponents: [],
   imports: [
     BrowserModule,

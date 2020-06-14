@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { CreateMatchComponent } from '../create-match/create-match.component';
 
 @Component({
   selector: 'app-match-list',
@@ -7,8 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MatchListComponent implements OnInit {
 
-  constructor() { }
+  constructor(private readonly modalController: ModalController) { }
 
-  ngOnInit() {}
+  async ngOnInit() {
+
+  }
+
+  async createMatch() {
+    const modal = await this.modalController.create({
+      component: CreateMatchComponent,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        createMatchController: this.modalController
+      }
+    });
+    return await modal.present();
+  }
 
 }
