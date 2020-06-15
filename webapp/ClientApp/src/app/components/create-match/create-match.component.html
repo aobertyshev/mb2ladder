@@ -7,11 +7,14 @@
     <ion-label position="floating">Type</ion-label>
     <ion-input type="text" formControlName="region" formControlName="type"></ion-input>
   </ion-item>
-  <ion-grid>
+  <!-- <ion-grid>
     <ion-row>
-      <ion-col>
-        <p>Players: {{ playersInMatch.length }} / 10</p>
-        <ion-chip *ngFor="let player of playersInMatch">
+      <ion-col size="2">
+        {{ playersInMatch.length }} / 10
+        <ion-button (click)="shuffle()" fill="clear">
+          <ion-icon name="shuffle-outline"></ion-icon>
+        </ion-button>
+        <ion-chip *ngFor="let player of unselectedPlayers">
           <ion-avatar>
             <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
           </ion-avatar>
@@ -19,7 +22,27 @@
           <ion-icon name="close" (click)="deletePlayerFromMatch(player)"></ion-icon>
         </ion-chip>
       </ion-col>
-      <ion-col>
+      <ion-col size="2">
+        Team 1
+        <ion-chip *ngFor="let player of this.teams[0].players">
+          <ion-avatar>
+            <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+          </ion-avatar>
+          <ion-label>{{ player.nick }}</ion-label>
+          <ion-icon name="close" (click)="deletePlayerFromMatch(player)"></ion-icon>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        Team 2
+        <ion-chip *ngFor="let player of this.teams[1].players">
+          <ion-avatar>
+            <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+          </ion-avatar>
+          <ion-label>{{ player.nick }}</ion-label>
+          <ion-icon name="close" (click)="deletePlayerFromMatch(player)"></ion-icon>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="6">
         <ion-searchbar animated placeholder="Players" formControlName="playerSearch"></ion-searchbar>
         <ng-container *ngIf="!!players">
           <ng-container *ngFor="let player of players">
@@ -33,7 +56,7 @@
         </ng-container>
       </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid> -->
   <div class="ion-padding">
     <ion-button expand="block" type="submit" class="ion-no-margin">Create match</ion-button>
   </div>
