@@ -18,6 +18,9 @@ namespace MBIILadder.Shared.Services
         Task<IDictionary<string, User>> GetUsersAsync();
         Task<Player> GetPlayerAsync(Guid id);
         Task<IDictionary<string, Player>> GetPlayersAsync();
+        Task<MBIILadder.Shared.Models.Queue> CreateQueueAsync(MBIILadder.Shared.Models.Queue queue);
+        Task JoinQueueAsync(Guid queueId, Guid playerId);
+        Task<MBIILadder.Shared.Models.Queue> GetQueueAsync(Guid id);
     }
 
     public class Firebase : IFirebase
@@ -40,6 +43,9 @@ namespace MBIILadder.Shared.Services
         {
             return (await client.GetTaskAsync("Users/")).ResultAs<Dictionary<string, User>>();
         }
+
+
+
         public async Task<Player> CreatePlayerAsync(Player player)
         {
             return (await client.SetTaskAsync($"Players/{player.Id}", player)).ResultAs<Player>();
@@ -53,26 +59,40 @@ namespace MBIILadder.Shared.Services
             return (await client.GetTaskAsync($"Players/{id}")).ResultAs<Player>();
         }
 
+
+
         public async Task<Match> CreateMatchAsync(Match match)
         {
             return (await client.SetTaskAsync($"Matches/{match.Id}", match)).ResultAs<Match>();
         }
-
-        public async Task<Match> UpdateMatchAsync(Match match)
-        {
-            return (await client.UpdateTaskAsync($"Matches/{match.Id}", match)).ResultAs<Match>();
-        }
-
         public async Task<Match> GetMatchAsync(Guid id)
         {
             var match = (await client.GetTaskAsync($"Matches/{id}")).ResultAs<Match>();
             match.Date = match.Date.ToUniversalTime();
             return match;
         }
-
+        public async Task<Match> UpdateMatchAsync(Match match)
+        {
+            return (await client.UpdateTaskAsync($"Matches/{match.Id}", match)).ResultAs<Match>();
+        }
         public async Task DeleteMatchAsync(Guid id)
         {
             await client.DeleteTaskAsync($"Matches/{id}");
+        }
+
+
+
+        public async Task<MBIILadder.Shared.Models.Queue> CreateQueueAsync(MBIILadder.Shared.Models.Queue queue)
+        {
+            return (await client.SetTaskAsync($"Queues/{queue.Id}", queue)).ResultAs<MBIILadder.Shared.Models.Queue>();
+        }
+        public async Task JoinQueueAsync(Guid queueId, Guid playerId)
+        {
+            await client.SetTaskAsync($"Queues/{queueId}/PlayerIds/{playerId}", true);
+        }
+        public async Task<MBIILadder.Shared.Models.Queue> GetQueueAsync(Guid id)
+        {
+            return (await client.GetTaskAsync($"Queues/{id}")).ResultAs<MBIILadder.Shared.Models.Queue>();
         }
     }
 }

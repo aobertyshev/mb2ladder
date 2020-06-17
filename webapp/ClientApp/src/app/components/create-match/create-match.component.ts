@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { PlayerService } from 'src/app/services/player/player.service';
-import { Player } from 'src/app/models/register/player';
-import { Team } from 'src/app/models/register/team';
-import { Match } from 'src/app/models/register/match';
+import { Player } from 'src/app/models/player';
+import { Team } from 'src/app/models/team';
+import { Match } from 'src/app/models/match';
 import { ToolsService } from 'src/app/services/tools/tools.service';
 import { MatchService } from 'src/app/services/match/match.service';
 

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { RegisterComponent } from '../register/register.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Login } from 'src/app/models/register/login';
+import { Login } from 'src/app/models/login';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({

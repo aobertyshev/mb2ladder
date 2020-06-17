@@ -10,6 +10,7 @@ using MBIILadder.Shared.Models;
 using MBIILadder.WebApp.Models;
 using System.Security.Cryptography;
 using MBIILadder.Shared.Services;
+using System.Security.Claims;
 
 namespace MBIILadder.WebApp.Controllers
 {
@@ -87,6 +88,14 @@ namespace MBIILadder.WebApp.Controllers
             return true;
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> SignOut()
+        {
+            HttpContext.Response.Cookies.Delete("MBIILadder.SessionKey");
+            return Ok();
+        }
+
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] Login model)
         {
@@ -110,17 +119,20 @@ namespace MBIILadder.WebApp.Controllers
                 HttpOnly = false
             };
             var player = await _firebase.GetPlayerAsync(user.PlayerId);
-            HttpContext.Response.Cookies.Append("MBIILadder.SessionKey", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<System.Security.Claims.Claim>()), new CookieOptions
+            HttpContext.Response.Cookies.Append("MBIILadder.SessionKey", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<Claim>
             {
-                MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
-                SameSite = SameSiteMode.Strict,
-                Secure = true,
-                HttpOnly = true
-            });
+                new Claim("Id", user.PlayerId.ToString())
+            }),
+            // new CookieOptions
+            // {
+            //     MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
+            //     SameSite = SameSiteMode.Strict,
+            //     Secure = true,
+            //     HttpOnly = true
+            // }
+            defaultCookieOptions
+            );
             HttpContext.Response.Cookies.Append("MBIILadder.ExpiryDate", DateTime.UtcNow.AddMinutes(defaultExpirationInMinutes).ToString(), defaultCookieOptions);
-            HttpContext.Response.Cookies.Append("MBIILadder.Player.Nick", player.Nick, defaultCookieOptions);
-            HttpContext.Response.Cookies.Append("MBIILadder.Player.Clan", player.ClanName, defaultCookieOptions);
-            HttpContext.Response.Cookies.Append("MBIILadder.Player.Region", player.Region, defaultCookieOptions);
             return Ok();
         }
     }

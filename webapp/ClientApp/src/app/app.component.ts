@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LoginComponent } from './components/login/login.component';
 import { AuthService } from './services/auth/auth.service';
 import { ToolsService } from './services/tools/tools.service';
+import { QueueService } from './services/queue/queue.service';
 
 @Component({
   selector: 'app-root',
@@ -18,22 +19,26 @@ export class AppComponent implements OnInit {
     {
       title: 'Home',
       url: '/',
-      icon: 'home'
+      icon: 'home',
+      disabled: false,
     },
     {
       title: 'Matches',
       url: '/matches',
-      icon: 'rocket'
+      icon: 'rocket',
+      disabled: true,
     },
     {
       title: 'Players',
       url: '/players',
-      icon: 'person'
+      icon: 'person',
+      disabled: false,
     },
     {
       title: 'Teams',
       url: '/teams',
-      icon: 'people'
+      icon: 'people',
+      disabled: true,
     },
   ];
 
@@ -43,7 +48,8 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private readonly modalController: ModalController,
     private readonly auth: AuthService,
-    private readonly tools: ToolsService
+    private readonly tools: ToolsService,
+    private readonly queue: QueueService
   ) {
     this.initializeApp();
   }
@@ -71,5 +77,9 @@ export class AppComponent implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  async joinQueue(): Promise<any> {
+    await this.queue.joinQueue();
   }
 }

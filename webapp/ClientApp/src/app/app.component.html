@@ -7,14 +7,16 @@
           Sign In
         </ion-button>
         <ng-container *ngIf="auth.isAuthenticated()">
-          <ion-list-header>{{ tools.getCookie('MBIILadder.Player.Nick') }}</ion-list-header>
-          <ion-note>{{ tools.getCookie('MBIILadder.Player.Clan') }}</ion-note>
+          <!-- <ion-list-header>{{ tools.getCookie('MBIILadder.Player.Nick') }}</ion-list-header>
+          <ion-note>{{ tools.getCookie('MBIILadder.Player.Clan') }}</ion-note> -->
+          <br />
+          <ion-button (click)="joinQueue()">Join queue</ion-button>
         </ng-container>
         <ion-list>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.url]" lines="none"
-              detail="false" [class.selected]="selectedIndex == i">
+              detail="false" [class.selected]="selectedIndex == i" [disabled]="p.disabled">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>

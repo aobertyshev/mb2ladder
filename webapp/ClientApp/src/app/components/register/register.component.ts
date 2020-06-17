@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Register } from 'src/app/models/register/register';
+import { Register } from 'src/app/models/register';
 
 @Component({
   selector: 'app-register',

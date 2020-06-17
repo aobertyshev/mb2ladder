@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Register } from 'src/app/models/register/register';
-import { Login } from 'src/app/models/register/login';
+import { Register } from 'src/app/models/register';
+import { Login } from 'src/app/models/login';
 import { ToolsService } from '../tools/tools.service';
 
 @Injectable({
@@ -29,7 +29,8 @@ export class AuthService {
     return false;
   }
 
-  signOut(): void {
+  async signOut(): Promise<any> {
     this.tools.deleteCookie('MBIILadder.ExpiryDate');
+    return await this.http.get(`${window.location.origin}/auth/signOut`, { observe: 'response' }).toPromise();
   }
 }
