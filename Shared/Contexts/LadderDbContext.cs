@@ -16,6 +16,6 @@ namespace Shared.Contexts
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=postgres;Username=postgres;Password=postgres;CommandTimeout=0;Timeout=0;");
+            => optionsBuilder.UseNpgsql(System.Environment.GetEnvironmentVariable("MBII_LADDER_DB_CONNECTION_STRING"));
     }
 }
