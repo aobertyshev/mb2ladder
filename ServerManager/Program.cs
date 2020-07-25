@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MBIILadder.Shared.Services;
-using MBIILadder.Shared.Models;
+using Microsoft.EntityFrameworkCore;
+using Shared.Contexts;
+using Shared.Services;
+using Shared.Models;
 
-namespace MBILadder.ServerManager
+namespace ServerManager
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
             => new Program().MainAsync().GetAwaiter().GetResult();
 
         async Task MainAsync()

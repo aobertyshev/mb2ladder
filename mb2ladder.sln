@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "discordbot", "discordbot\discordbot.csproj", "{AC84DD01-CEB0-471E-854D-00E977B5F27E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBot", "DiscordBot\DiscordBot.csproj", "{AC84DD01-CEB0-471E-854D-00E977B5F27E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "servermanager", "servermanager\servermanager.csproj", "{9868E116-BFDD-4943-B8EF-E995AABBEECA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "ServerManager\ServerManager.csproj", "{9868E116-BFDD-4943-B8EF-E995AABBEECA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapp", "webapp\webapp.csproj", "{012C3A6B-4734-4F85-9F60-23633A429223}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{012C3A6B-4734-4F85-9F60-23633A429223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared", "shared\shared.csproj", "{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1932C29F-3AFB-4C61-903F-BAD5DF3BCA3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

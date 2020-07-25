@@ -3,28 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MBIILadder.Shared.Services;
+using Shared.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using Shared.Contexts;
+using Shared.Models;
 
 namespace MBIILadder.WebApp.Controllers
 {
     [Authorize]
     public class QueueController : ControllerBase
     {
-        IFirebase _firebase;
-        public QueueController(IFirebase firebase)
+        private readonly LadderDbContext _db;
+        public QueueController(LadderDbContext db)
         {
-            _firebase = firebase;
+            _db = db;
         }
 
         public async Task<IActionResult> Create()
         {
-            var queue = new MBIILadder.Shared.Models.Queue
+            await _db.Queues.AddAsync(new Queue
             {
                 Id = Guid.Empty
-            };
-            await _firebase.CreateQueueAsync(queue);
+            });
             return Ok();
         }
 
@@ -32,10 +34,10 @@ namespace MBIILadder.WebApp.Controllers
         {
             var user = HttpContext.User.Identity as ClaimsIdentity;
             var id = user?.FindFirst("Id").Value;
-            var queue = await _firebase.GetQueueAsync(Guid.Empty);
-            queue.PlayerIds ??= new Dictionary<Guid, bool>();
-            queue.PlayerIds.Add(Guid.Parse(id), true);
-            await _firebase.CreateQueueAsync(queue);
+            var queue = await _db.Queues.SingleOrDefaultAsync(dbQueue => dbQueue.Id == Guid.Empty);
+            queue.UserIds ??= new Guid[0];
+            _db.Queues.Update(queue);
+            await _db.SaveChangesAsync();
             return Ok();
         }
     }

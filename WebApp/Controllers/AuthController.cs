@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using MBIILadder.WebApp.Services;
 using Microsoft.AspNetCore.Authorization;
-using MBIILadder.Shared.Models;
+using Shared.Models;
 using MBIILadder.WebApp.Models;
 using System.Security.Cryptography;
-using MBIILadder.Shared.Services;
+using Shared.Contexts;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
-namespace MBIILadder.WebApp.Controllers
+namespace WebApp.Controllers
 {
     public class AuthController : ControllerBase
     {
-        IToken _tokenManager;
-        IFirebase _firebase;
-        public AuthController(IToken tokenManager, IFirebase firebase)
+        private readonly IToken _tokenManager;
+        private readonly LadderDbContext _db;
+        public AuthController(IToken tokenManager, LadderDbContext db)
         {
             _tokenManager = tokenManager;
-            _firebase = firebase;
+            _db = db;
         }
 
         [HttpPost]
@@ -32,7 +33,7 @@ namespace MBIILadder.WebApp.Controllers
                 return BadRequest();
             }
 
-            if ((await _firebase.GetUsersAsync()).Values.SingleOrDefault(user => user.Email == model.Email) != null)
+            if (await _db.Users.AnyAsync(dbUser => dbUser.Email == model.Email))
             {
                 return Conflict();
             }
@@ -45,25 +46,15 @@ namespace MBIILadder.WebApp.Controllers
                 Id = userId,
                 PlayerId = playerId,
                 Email = model.Email,
-                Password = await HashPasswordAsync(model.Password),
+                Password = HashPassword(model.Password),
                 ConfirmedEmail = false,
                 RegisterDate = DateTime.UtcNow
             };
-            var player = new Player
-            {
-                Id = playerId,
-                UserId = userId,
-                Nick = model.Nick,
-                ClanName = model.ClanName,
-                Region = model.Region,
-                Discord = model.Discord,
-            };
-            await _firebase.CreateUserAsync(user);
-            await _firebase.CreatePlayerAsync(player);
-            return Ok(player);
+            await _db.Users.AddAsync(user);
+            return Ok();
         }
 
-        private async Task<string> HashPasswordAsync(string password)
+        private string HashPassword(string password)
         {
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
@@ -90,7 +81,7 @@ namespace MBIILadder.WebApp.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> SignOut()
+        public IActionResult SignOut()
         {
             HttpContext.Response.Cookies.Delete("MBIILadder.SessionKey");
             return Ok();
@@ -104,13 +95,13 @@ namespace MBIILadder.WebApp.Controllers
                 return BadRequest();
             }
 
-            var user = (await _firebase.GetUsersAsync()).Values.SingleOrDefault(user => user.Email == model.Email);
+            var user = await _db.Users.SingleOrDefaultAsync(dbUser => dbUser.Email == model.Email);
             if (user == null || !ArePasswordsEqual(user.Password, model.Password))
             {
                 return Unauthorized();
             }
 
-            var defaultExpirationInMinutes = 60;
+            const int defaultExpirationInMinutes = 60;
             var defaultCookieOptions = new CookieOptions
             {
                 MaxAge = TimeSpan.FromMinutes(defaultExpirationInMinutes),
@@ -118,10 +109,9 @@ namespace MBIILadder.WebApp.Controllers
                 Secure = false,
                 HttpOnly = false
             };
-            var player = await _firebase.GetPlayerAsync(user.PlayerId);
             HttpContext.Response.Cookies.Append("MBIILadder.SessionKey", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<Claim>
             {
-                new Claim("Id", user.PlayerId.ToString())
+                new Claim("Id", user.PlayerId.ToString()),
             }),
             // new CookieOptions
             // {

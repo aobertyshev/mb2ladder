@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
-using MBIILadder.Shared.Services;
+using Shared.Services;
 
 namespace MBIILadder.WebApp
 {
