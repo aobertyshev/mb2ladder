@@ -25,43 +25,44 @@ export class CreateMatchComponent implements OnInit {
   constructor(private readonly formBuilder: FormBuilder, private readonly playerService: PlayerService, private readonly tools: ToolsService, private readonly matchService: MatchService) { }
 
   async ngOnInit() {
-    this.teams = [{ id: undefined, playerIds: [] }, { id: undefined, playerIds: [] }];
+    this.teams = [{ id: undefined, players: [], playerIds: [] }, { id: undefined, players: [], playerIds: [] }];
     this.playersInMatch = [];
     this.unselectedPlayers = [];
     this.createMatchForm = this.formBuilder.group({
       dateTime: [undefined, Validators.compose([
-        Validators.required, Validators.email])],
+        Validators.required])],
       type: [{ value: 'PUG', disabled: true }, Validators.required],
       playerSearch: ['']
     });
-    this.players = await (await this.playerService.getPlayerList()).body;
+    this.players = (await this.playerService.getPlayerList()).body;
   }
 
   async createMatch() {
     if (this.createMatchForm.valid /*&& this.playersInMatch.length === 10*/) {
-      const now = this.tools.convertDateToUTC(new Date());
       const match: Match = {
         id: undefined,
         date: this.createMatchForm.value.dateTime,
-        dateCreated: now,
-        dateUpdated: now,
         // xd
         maps: ['mb2_dotf', 'mb2_lunarbase'],
         score: '',
         teams: []
       }
+      match.teams.forEach(team => {
+        team.playerIds = team.players.map(player => player.id);
+        delete team.players;
+      });
       await this.matchService.createMatch(match);
     }
   }
 
   shuffle() {
-    this.teams.forEach((team) => team.playerIds.forEach((playerId) => this.unselectedPlayers.push(playerId)));
-    this.teams[0].playerIds = [];
-    this.teams[1].playerIds = [];
+    this.teams.forEach((team) => team.players.forEach((player) => this.unselectedPlayers.push(player)));
+    this.teams[0].players = [];
+    this.teams[1].players = [];
     this.unselectedPlayers.forEach((player) => {
       //doesnt work with Ids - todo fixme
-      const teamIndex = (Math.random() >= 0.5 && this.teams[0].playerIds.length < 5) ? 0 : 1;
-      this.teams[teamIndex].playerIds.push(player);
+      const teamIndex = (Math.random() >= 0.5 && this.teams[0].players.length < 5) ? 0 : 1;
+      this.teams[teamIndex].players.push(player);
     });
     this.unselectedPlayers = [];
   }
@@ -85,14 +86,14 @@ export class CreateMatchComponent implements OnInit {
       this.playersInMatch.splice(index, 1);
     }
 
-    index = this.teams[0].playerIds.indexOf(player);
+    index = this.teams[0].players.indexOf(player);
     if (index !== -1) {
-      this.teams[0].playerIds.splice(index, 1);
+      this.teams[0].players.splice(index, 1);
     }
 
-    index = this.teams[1].playerIds.indexOf(player);
+    index = this.teams[1].players.indexOf(player);
     if (index !== -1) {
-      this.teams[1].playerIds.splice(index, 1);
+      this.teams[1].players.splice(index, 1);
     }
 
     index = this.unselectedPlayers.indexOf(player);

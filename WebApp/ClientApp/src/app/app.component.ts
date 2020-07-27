@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
       title: 'Matches',
       url: '/matches',
       icon: 'rocket',
-      disabled: true,
+      disabled: false,
     },
     {
       title: 'Players',

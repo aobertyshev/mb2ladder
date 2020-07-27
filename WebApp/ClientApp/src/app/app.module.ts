@@ -15,6 +15,7 @@ import { PlayerListComponent } from './components/player-list/player-list.compon
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CreateMatchComponent } from './components/create-match/create-match.component';
+import { MatchListComponent } from './components/match-list/match-list.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CreateMatchComponent } from './components/create-match/create-match.com
     PlayerListComponent,
     LoginComponent,
     RegisterComponent,
-    CreateMatchComponent
+    CreateMatchComponent,
+    MatchListComponent
   ],
   entryComponents: [],
   imports: [

@@ -6,12 +6,18 @@
   </ion-header>
 
   <ion-content class="ion-padding">
+    <ng-container *ngIf="!loaded">
+      <ion-spinner></ion-spinner>
+    </ng-container>
+    <ng-container *ngIf="loaded">
+      <div *ngFor="let match of matches">{{match.date}}</div>
+    </ng-container>
 
-    <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="createMatch()">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="createMatch()">
       <ion-fab-button>
         <ion-icon name="add-outline"></ion-icon>
       </ion-fab-button>
-    </ion-fab> -->
+    </ion-fab>
 
   </ion-content>
 

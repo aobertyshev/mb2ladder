@@ -12,4 +12,14 @@ export class MatchService {
   async createMatch(match: Match): Promise<HttpResponse<any>> {
     return await this.http.post(`${window.location.origin}/matches/create`, match, { observe: 'response' }).toPromise();
   }
+
+  async getMatches(): Promise<Array<Match>> {
+    const matches = (await this.http.get<Array<Match>>(`${window.location.origin}/matches/list`, { observe: 'response' }).toPromise()).body;
+    matches.forEach(match => {
+      match.date = new Date(match.date);
+      match.dateCreated = new Date(match.dateCreated);
+      match.dateUpdated = new Date(match.dateUpdated);
+    })
+    return matches;
+  }
 }
