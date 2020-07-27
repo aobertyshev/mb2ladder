@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using Shared.Contexts;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Shared.Services;
 
 namespace WebApp.Controllers
 {
@@ -19,10 +20,15 @@ namespace WebApp.Controllers
     {
         private readonly IToken _tokenManager;
         private readonly LadderDbContext _db;
-        public AuthController(IToken tokenManager, LadderDbContext db)
+        private readonly ICrypto _crypto;
+        public AuthController(
+            IToken tokenManager,
+            LadderDbContext db,
+            ICrypto crypto)
         {
             _tokenManager = tokenManager;
             _db = db;
+            _crypto = crypto;
         }
 
         [HttpPost]
@@ -38,45 +44,21 @@ namespace WebApp.Controllers
                 return Conflict();
             }
 
-            var userId = Guid.NewGuid();
-            var playerId = Guid.NewGuid();
-
             var user = new User
             {
-                Id = userId,
-                PlayerId = playerId,
+                Id = Guid.NewGuid(),
                 Email = model.Email,
-                Password = HashPassword(model.Password),
+                Password = _crypto.HashPassword(model.Password),
                 ConfirmedEmail = false,
-                RegisterDate = DateTime.UtcNow
+                RegisterDate = DateTime.UtcNow,
+                Discord = model.Discord,
+                Nick = model.Nick,
+                Region = model.Region,
+                ClanName = model.ClanName
             };
             await _db.Users.AddAsync(user);
+            await _db.SaveChangesAsync();
             return Ok();
-        }
-
-        private string HashPassword(string password)
-        {
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-            return Convert.ToBase64String(hashBytes);
-        }
-
-        private bool ArePasswordsEqual(string storedPassword, string modelPassword)
-        {
-            byte[] hashBytes = Convert.FromBase64String(storedPassword);
-            byte[] salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-            var pbkdf2 = new Rfc2898DeriveBytes(modelPassword, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-            for (int i = 0; i < 20; i++)
-                if (hashBytes[i + 16] != hash[i])
-                    return false;
-            return true;
         }
 
         [Authorize]
@@ -96,7 +78,7 @@ namespace WebApp.Controllers
             }
 
             var user = await _db.Users.SingleOrDefaultAsync(dbUser => dbUser.Email == model.Email);
-            if (user == null || !ArePasswordsEqual(user.Password, model.Password))
+            if (user == null || !_crypto.ArePasswordsEqual(user.Password, model.Password))
             {
                 return Unauthorized();
             }
@@ -111,7 +93,7 @@ namespace WebApp.Controllers
             };
             HttpContext.Response.Cookies.Append("MBIILadder.SessionKey", _tokenManager.GenerateToken(defaultExpirationInMinutes, new List<Claim>
             {
-                new Claim("Id", user.PlayerId.ToString()),
+                // new Claim("Id", user.PlayerId.ToString()),
             }),
             // new CookieOptions
             // {

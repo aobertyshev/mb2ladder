@@ -15,8 +15,11 @@ export class RegisterComponent implements OnInit {
 
   @Input() registerModalController: ModalController;
 
-  constructor(private readonly _authService: AuthService, private readonly toastController: ToastController,
-    private readonly formBuilder: FormBuilder) { }
+  constructor(
+    private readonly _authService: AuthService,
+    private readonly toastController: ToastController,
+    private readonly formBuilder: FormBuilder
+  ) { }
 
   async ngOnInit() {
     this.registerForm = this.formBuilder.group({
@@ -42,7 +45,11 @@ export class RegisterComponent implements OnInit {
         toast.present();
         return;
       }
-      this.details = this.registerForm.value;
+      if (this.registerForm.controls.region.disabled) {
+        this.registerForm.controls.region.enable();
+      }
+      this.details = { ...this.registerForm.value };
+      this.registerForm.controls.region.disable();
       delete this.details['passwordRepeat'];
       try {
         await this._authService.register(this.details);

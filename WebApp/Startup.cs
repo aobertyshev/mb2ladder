@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
+using Shared.Contexts;
 using Shared.Services;
 
 namespace MBIILadder.WebApp
@@ -67,6 +68,8 @@ namespace MBIILadder.WebApp
                         .AllowAnyMethod());
             });
             services.AddSingleton<IFirebase, Firebase>();
+            services.AddSingleton<ICrypto, Crypto>();
+            services.AddDbContext<LadderDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,7 +84,7 @@ namespace MBIILadder.WebApp
                 app.UseHsts();
             }
             app.UseResponseCompression();
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors();
