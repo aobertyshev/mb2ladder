@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Shared.Models
 {
@@ -10,5 +11,6 @@ namespace Shared.Models
         public DateTime DateUpdated { get; set; }
         public string[] Maps { get; set; }
         public string Score { get; set; }
+        public string[] Players { get; set; }
     }
 }

@@ -6,9 +6,9 @@ namespace Shared.Contexts
     public sealed class LadderDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Queue> Queues { get; set; }
+        // public DbSet<Queue> Queues { get; set; }
         public DbSet<Match> Matches { get; set; }
-        public DbSet<Team> Teams { get; set; }
+        // public DbSet<Team> Teams { get; set; }
 
         public LadderDbContext()
         {
