@@ -12,11 +12,11 @@ namespace Shared.Models
         // public string Password { get; set; }
         // [JsonIgnore]
         // public bool ConfirmedEmail { get; set; }
-        public DateTime RegisterDate { get; set; }
+        // public DateTime RegisterDate { get; set; }
 
         public string Nick { get; set; }
         // public string Region { get; set; }
         // public string ClanName { get; set; }
-        // public string Discord { get; set; }
+        public ulong DiscordId { get; set; }
     }
 }

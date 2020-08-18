@@ -10,4 +10,8 @@ dotnet restore
 cd ./webapp/ClientApp/
 npm install
 cd ../../
-echo 'Dependencies restored. cd to any project folder and dotnet run'
+echo 'Dependencies restored. Applying initial database migration'
+cd ./Shared/
+dotnet ef migrations add InitialCreate
+echo 'Initial database migration applied'
+

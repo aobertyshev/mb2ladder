@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using Shared.Contexts;
 using Shared.Models;
+using Shared;
 
 namespace DiscordBot
 {
@@ -20,7 +22,6 @@ namespace DiscordBot
 
         async Task MainAsync()
         {
-            _db = new LadderDbContext();
             var config = new DiscordSocketConfig { MessageCacheSize = 100 };
             _client = new DiscordSocketClient(config);
 
@@ -29,7 +30,10 @@ namespace DiscordBot
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
-
+            var timer = new Timer(10000);
+            timer.Elapsed += CheckForPasswordedMatchesAndSendNotificationsAsync;
+            timer.Start();
+            
             _client.MessageUpdated += MessageUpdated;
             _client.ReactionAdded += ReactionAdded;
             _client.ReactionRemoved += ReactionRemoved;
@@ -39,14 +43,33 @@ namespace DiscordBot
                 Console.WriteLine("Bot is connected!");
                 return Task.CompletedTask;
             };
-
-            // while (true)
-            // {
-            //     var matches = _db.Matches.ToList();
-            // }
-
-            // Block this task until the program is closed.
+            
             await Task.Delay(-1);
+        }
+
+        public async void CheckForPasswordedMatchesAndSendNotificationsAsync(object state, ElapsedEventArgs args)
+        {
+            _db = new LadderDbContext();
+            var match = _db.Matches.FirstOrDefault(match => match.MatchState == MatchState.Passworded);
+            if (match == null) return;
+            //very bad here, need to refactor
+            foreach (var player in match.Players)
+            {
+                var playerfromDb = _db.Users.SingleOrDefault(user => user.Nick == player);
+                await _client.GetUser(playerfromDb.DiscordId).SendMessageAsync(
+                    "Match is starting." +
+                    Environment.NewLine +
+                    $"Team 1: {string.Join(", ",match.Players.Take(Constants.REQUIRED_AMOUNT_OF_PLAYERS / 2))}" +
+                    Environment.NewLine +
+                    $"Team 2: {string.Join(", ",match.Players.TakeLast(Constants.REQUIRED_AMOUNT_OF_PLAYERS / 2))}" +
+                    Environment.NewLine +
+                    "Open the game and paste this into the console:" +
+                    Environment.NewLine +
+                    $"`name {player}; password {match.Password}; connect {match.ServerIp};`");
+            }
+            match.MatchState = MatchState.SentNotifications;
+            _db.Update(match);
+            await _db.SaveChangesAsync();
         }
 
         private Task Log(LogMessage msg)
@@ -61,82 +84,73 @@ namespace DiscordBot
             // If the message was not in the cache, downloading it will result in getting a copy of `after`.
             var message = await before.GetOrDownloadAsync();
             Console.WriteLine($"{message} -> {after}");
-            // await after.Author.SendMessageAsync("test");
         }
 
         private async Task ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, 
             SocketReaction reaction)
         {
-            var now = DateTime.UtcNow;
             if (reaction.User.Value.IsBot) return;
-            if (reaction.Emote.Name != "➕")
+            if (reaction.Emote.Name != Constants.PLUS_REACTION_EMOTE)
             {
                 await message.Value.RemoveReactionAsync(reaction.Emote, reaction.User.Value, RequestOptions.Default);
                 return;
             }
-            await message.Value.RemoveReactionAsync(new Emoji("➕"), _client.CurrentUser);
+            await message.Value.RemoveReactionAsync(new Emoji(Constants.PLUS_REACTION_EMOTE), _client.CurrentUser);
+            
+            _db = new LadderDbContext();
             if (!_db.Users.Any(user => user.Nick == reaction.User.Value.Username))
             {
                 await _db.Users.AddAsync(new User
                 {
                     Id = Guid.NewGuid(),
                     Nick = reaction.User.Value.Username,
-                    RegisterDate = now
+                    DiscordId = reaction.User.Value.Id
                 });
             }
 
             var matchId = Guid.Parse(message.Value.Content.Split(Environment.NewLine)[0].Split("||")[1]);
             var match = _db.Matches.SingleOrDefault(match => match.Id == matchId);
-            if (match == null)
+            match.Players = match.Players.Append(reaction.User.Value.Username).ToArray();
+            if (match.Players.Length == Constants.REQUIRED_AMOUNT_OF_PLAYERS)
             {
-                match = new Match
-                {
-                    Date = now,
-                    Id = matchId,
-                    Maps = new[] {"mb2_dotf", "mb2_lunarbase"},
-                    DateCreated = now,
-                    DateUpdated = now,
-                    Score = "0:0",
-                    Players = new []{reaction.User.Value.Username}
-                };
-                await _db.Matches.AddAsync(match);
-            }
-            else
-            {
-                match.Players.Append(reaction.User.Value.Username);
+                match.MatchState = MatchState.GotEnoughPlayers;
             }
 
             await _db.SaveChangesAsync();
-            // await reaction.User.Value.SendMessageAsync("Ok, you're accepted for the match");
         }
 
         private async Task ReactionRemoved(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, 
             SocketReaction reaction)
         {
+            if (reaction.User.Value.IsBot) return;
             if (!message.Value.Reactions.Keys.Any())
             {
-                await message.Value.AddReactionAsync(new Emoji("➕"));
+                await message.Value.AddReactionAsync(new Emoji(Constants.PLUS_REACTION_EMOTE));
             }
-            Console.WriteLine(reaction.Emote.Name);
-            // await reaction.User.Value.SendMessageAsync("Ok, you're removed from the match");
         }
 
         private async Task MessageReceived(SocketMessage message)
         {
-            if (message.Author.Username != "Helix") return;
+            if (message.Author.Id != Constants.AUTHORIZED_USER_ID) return;
+            _db = new LadderDbContext();
             var matchId = Guid.NewGuid();
-            var date = DateTime.UtcNow.AddDays(3);
-            var channel = _client.GetChannel(720655447870406670) as IMessageChannel;
+            await _db.Matches.AddAsync(
+                new Match
+                {
+                    Id = matchId,
+                    Players = new string[0],
+                    MatchState = MatchState.Created
+                });
+            await _db.SaveChangesAsync();
+            
+            var channel = _client.GetChannel(Constants.AUTHORIZED_CHANNEL) as IMessageChannel;
             var announcement = await channel.SendMessageAsync(
-                $"||{matchId}||{Environment.NewLine}"+
+                $"||{matchId}||" +
+                Environment.NewLine +
                 "@everyone" +
-                $"{Environment.NewLine}" +
-                "New match!" +
-                $"{Environment.NewLine}" +
-                "Maps: `mb2_dotf`, `mb2_lunarbase`" +
-                $"{Environment.NewLine}" +
-                $"Date: `{date}`");
-            await announcement.AddReactionAsync(new Emoji("➕"));
+                Environment.NewLine +
+                "New match!");
+            await announcement.AddReactionAsync(new Emoji(Constants.PLUS_REACTION_EMOTE));
         }
     }
 }
